@@ -1,0 +1,23 @@
+body {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+#canvas-div {
+	width: 900px;
+	height: 900px;
+}
+
+#settings-div {
+	font-size: 300%;
+}
+
+input[type="radio"] {
+	transform: scale(1.5);
+}
+
+button {
+	font-size: 100%;
+}

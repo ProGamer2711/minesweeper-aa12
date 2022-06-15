@@ -68,7 +68,7 @@ class Tile {
 		if (this.number === null) return;
 
 		ctx.fillStyle = "#ffffff";
-		ctx.font = "30px Arial";
+		ctx.font = `${Tile.size}px Arial`;
 		ctx.textAlign = "center";
 		ctx.textBaseline = "middle";
 
@@ -128,7 +128,6 @@ class Game {
 		this.started = false;
 
 		this.generateEmptyBoard();
-		this.drawBoard();
 
 		/**
 		 * @param {Event} e
@@ -164,7 +163,7 @@ class Game {
 
 			let tile = this.board[x][y];
 
-			tile.isFlagged = !tile.isFlagged;
+			if (!tile.isUncovered) tile.isFlagged = !tile.isFlagged;
 			this.drawBoard(this.ctx);
 		};
 
@@ -308,6 +307,24 @@ class Game {
 		}
 	}
 
+	showMines() {
+		for (let i = 0; i < this.mines.length; i++) {
+			let mine = this.mines[i];
+			let tile = this.board[mine.x][mine.y];
+			if (!tile.isFlagged) tile.isUncovered = true;
+			tile.draw(this.ctx);
+		}
+	}
+
+	flagMines() {
+		for (let i = 0; i < this.mines.length; i++) {
+			let mine = this.mines[i];
+			let tile = this.board[mine.x][mine.y];
+			tile.isFlagged = true;
+			tile.draw(this.ctx);
+		}
+	}
+
 	/**
 	 * @param {"win" | "loss"} message
 	 */
@@ -317,16 +334,52 @@ class Game {
 		this.canvas.removeEventListener("contextmenu", this.flagListener);
 
 		if (reason === "win") {
+			this.flagMines();
 			setTimeout(() => alert("You win!"), 1);
 		} else if (reason === "loss") {
 			this.removeWrongFlags();
+			this.showMines();
 			setTimeout(() => alert("You lose!"), 1);
 		}
 	}
 }
 
 let canvas = document.getElementById("canvas");
+let game;
+let settingsForm = document.querySelector("#settings-form");
 
-let game = new Game(canvas, 16, 16, 40);
+settingsForm.addEventListener("submit", e => {
+	e.preventDefault();
 
-game.drawBoard();
+	let difficulty = settingsForm.difficulty.value;
+	let width = 0;
+	let height = 0;
+	let mines = 0;
+	
+	switch (difficulty) {		
+		case "easy":
+			width = 10;
+			height = 10;
+			mines = 10;
+			Tile.size = 50;
+			break;
+		case "normal":
+			width = 20;
+			height = 20;
+			mines = 40;
+			Tile.size = 40;
+			break;
+		case "hard":
+			width = 30;
+			height = 30;
+			mines = 100;
+			Tile.size = 30;
+			break;
+		default:
+			return;
+			break;
+	}
+
+	game = new Game(canvas, width, height, mines);
+	setTimeout(() => game.drawBoard(), 1000);
+});

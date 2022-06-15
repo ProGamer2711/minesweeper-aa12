@@ -9,8 +9,22 @@
 		<link rel="stylesheet" href="./style.css" />
 	</head>
 	<body>
-		<div>
+		<div id="canvas-div">
 			<canvas id="canvas"></canvas>
+		</div>
+		<div id="settings-div">
+				<form id="settings-form">
+					<input type="radio" name="difficulty" value="easy">
+					<label>Easy</label>
+					<br>
+					<input type="radio" name="difficulty" value="normal">
+					<label>Normal</label>
+					<br>
+					<input type="radio" name="difficulty" value="hard">
+					<label>Hard</label>
+					<br>
+					<button>Start New Game</button>
+				</form>
 		</div>
 		<script src="./script.js"></script>
 	</body>
